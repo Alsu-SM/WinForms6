@@ -44,6 +44,7 @@ namespace WinForms6
 
         public void RemoveNode(int NodeNumber) //удаление вершины
         {
+            NodeCount--;
             // помечаем удаленную вершину в матрице смежности
             for (int i = 0; i < NodeCount; i++)
             {
@@ -113,13 +114,12 @@ namespace WinForms6
             for (int j = 0; j < funcNodeCount; j++)
                 temp[j] = -1;
 
-            int listLength, count = 0;
-          // bool newNum = true;
+            int listLength;
+          
             temp[0] = 0;
-            count++;
+           
             List<int> Neighbours = new List<int>(); 
-            listLength = Neighbours.Count;
-
+            
             List<int> tempList = new List<int>();
             
             tempList.Add(0);
@@ -131,9 +131,29 @@ namespace WinForms6
                 listLength = Neighbours.Count;
                 for (int j = 0; j < listLength; j++)
                 {
-                    if (temp[Neighbours[j]] == -1)
-                        tempList.Add(Neighbours[j]);
+                    if (tempList.Contains(j))
+                        Neighbours.Remove(j);
                 }
+
+                if (Neighbours.Count==0)
+                {
+                    for (int j = 0; j < funcNodeCount; j++)
+                    {
+                        if (temp[j] == -1)
+                        {
+                            tempList.Add(j);
+                            if (temp[i] == 0)
+                                temp[j] = 1;
+                            if (temp[i] == 1)
+                                temp[j] = 0;
+                            i = j;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                tempList.AddRange(Neighbours);
                 
 
                 for (int j = i; j < listLength; j++)
@@ -149,6 +169,55 @@ namespace WinForms6
             }
 
             return temp;
+        }
+
+        public bool IsBigraph(int[] temp)
+        {
+            List<int> First = new List<int>();
+            List<int> Second = new List<int>();
+            for (int i = 0; i < funcNodeCount; i++) // разделяем на два списка
+            {
+                if (temp[i] == 0)
+                    First.Add(i);
+                if (temp[i] == 1)
+                    Second.Add(i);
+            }
+
+            int firstLength, secondLength;
+            firstLength = First.Count;
+            secondLength = Second.Count;
+
+            for (int i = 0; i < firstLength-1; i++)
+            {
+                for (int j = i + 1; j < firstLength; j++)
+                {
+                    if (IsEdge(First[i], First[j]))
+                        return false;
+                }    
+            }
+
+            for (int i = 0; i < secondLength - 1; i++)
+            {
+                for (int j = i + 1; j < secondLength; j++)
+                {
+                    if (IsEdge(Second[i], Second[j]))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsEuler() // является ли Эйлеровым (все степени четные)
+        {
+            for(int i = 0; i < NodeCount; i++)
+            {
+                if(GetNeighbours(i).Count % 2 != 0)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }

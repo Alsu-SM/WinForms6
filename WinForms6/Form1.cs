@@ -88,6 +88,16 @@ namespace WinForms6
                 richTextBox1.Text = sr.ReadToEnd();
                 g = Initialize(openFileDialog1.FileName);
                 DrawGraph(g);
+                if (g.IsBigraph(g.tempBigraph()))
+                    label4.Text = "да";
+                else
+                    label4.Text = "нет";
+
+                if (g.IsEuler())
+                    label5.Text = "да";
+                else
+                    label5.Text = "нет";
+
                 sr.Close();
             }
         }
@@ -98,7 +108,6 @@ namespace WinForms6
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
               
-           
                 StreamWriter streamWriter = new StreamWriter(saveFileDialog1.FileName);
                 streamWriter.WriteLine(richTextBox1.Text);
                 streamWriter.Close();
@@ -115,6 +124,17 @@ namespace WinForms6
                     str += g.funcMatrix[i, j].ToString() + " ";
             }
             richTextBox1.Text = str;
+            if (g.IsBigraph(g.tempBigraph()))
+                label4.Text = "да";
+            else
+                label4.Text = "нет";
+
+            if (g.IsEuler())
+                label5.Text = "да";
+            else
+                label5.Text = "нет";
+
+
         }
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -130,9 +150,7 @@ namespace WinForms6
 
         private void добавитьРеброToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Form2 f = new Form2();
-            //  f.Show();
-            //  f.Owner = this;
+           
             if (textBox1.Text != "" && textBox2.Text != "")
             {
                 int[] newTemp = new int[2];
